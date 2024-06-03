@@ -1,0 +1,5 @@
+stix2
+xmltodict==0.13.0
+tqdm>=4.14
+requests==2.31.0
+https://github.com/muchdogesec/stix4doge/archive/main.zip
