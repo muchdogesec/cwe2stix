@@ -4,7 +4,7 @@ import logging
 
 from stix2 import Bundle, ExternalReference, Filter, Relationship, parse, Grouping
 # from cwe2stix.schema import Weakness
-from stix4doge.weakness import Weakness
+from stix2extensions.weakness import Weakness
 from cwe2stix import utils
 from typing import List  # noqa F401
 from cwe2stix.config import namespace, fs, CWE2STIX_MARKING_DEFINITION, CWE2STIX_IDENTITY, WEAKNESS_EXTENSION_DEFINITION_URL, TLP_CLEAR_MARKING_DEFINITION

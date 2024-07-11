@@ -70,7 +70,7 @@ This XML file is what cwe2stix uses to generate the STIX objects.
 
 * Identity: https://raw.githubusercontent.com/muchdogesec/stix4doge/main/objects/identity/cwe2stix.json
 * Marking Definition: https://raw.githubusercontent.com/muchdogesec/stix4doge/main/objects/marking-definition/cwe2stix.json
-* Extension Definition: https://raw.githubusercontent.com/muchdogesec/stix4doge/main/objects/extension-definition/weakness.json
+* Extension Definition: https://raw.githubusercontent.com/muchdogesec/stix2extensions/main/extension-definitions/sdos/weakness.json
 
 ### Weakness
 

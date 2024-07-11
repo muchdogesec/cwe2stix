@@ -21,7 +21,7 @@ fs = FileSystemStore("stix2_objects")
 raw_data_xml = "data/raw_xml/"
 raw_data_json = "data/raw_json/"
 cwe2stix_version_filename = "CWE_VERSION"
-filename = "cwec_v4.13.xml"
+filename = "cwec_v4.14.xml"
 root = None
 tree = None
 cwe2stix_version = ""
@@ -30,7 +30,7 @@ cwe2stix_version = ""
 
 CWE2STIX_IDENTITY = "https://raw.githubusercontent.com/muchdogesec/stix4doge/main/objects/identity/cwe2stix.json"
 CWE2STIX_MARKING_DEFINITION = "https://raw.githubusercontent.com/muchdogesec/stix4doge/main/objects/marking-definition/cwe2stix.json"
-WEAKNESS_EXTENSION_DEFINITION_URL = "https://raw.githubusercontent.com/muchdogesec/stix4doge/main/objects/extension-definition/weakness.json"
+WEAKNESS_EXTENSION_DEFINITION_URL = "https://raw.githubusercontent.com/muchdogesec/stix2extensions/main/extension-definitions/sdos/weakness.json"
 TLP_CLEAR_MARKING_DEFINITION = "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
 
 # try:
