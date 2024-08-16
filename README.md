@@ -66,6 +66,10 @@ To handle versions, on the first run a `CWE_VERSION` file is created, listing th
 
 This XML file is what cwe2stix uses to generate the STIX objects.
 
+A high-level overview of the way the STIX objects are linked can be viewed here;
+
+https://miro.com/app/board/uXjVKpOg6bM=/
+
 ### Identity / Marking Definition / Extension Definition
 
 * Identity: https://raw.githubusercontent.com/muchdogesec/stix4doge/main/objects/identity/cwe2stix.json
@@ -305,7 +309,8 @@ python3 cwe2stix.py --version 4.10 && mv stix2_objects/cwe-bundle.json bundle_st
 python3 cwe2stix.py --version 4.11 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_11.json && \
 python3 cwe2stix.py --version 4.12 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_12.json && \
 python3 cwe2stix.py --version 4.13 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_13.json && \
-python3 cwe2stix.py --version 4.14 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_14.json
+python3 cwe2stix.py --version 4.14 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_14.json && \
+python3 cwe2stix.py --version 4.15 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_15.json
 ```
 
 Note, [you can easily download historic CWE data from our cti_knowledge_base repository so you don't have to run this script](https://github.com/muchdogesec/cti_knowledge_base_store).
