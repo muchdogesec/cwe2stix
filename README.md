@@ -2,12 +2,6 @@
 
 A command line tool that turns MITRE CWEs into STIX 2.1 Objects.
 
-## Before you get started
-
-If you do not want to backfill, maintain, or support your own CWE STIX objects check out CTI Butler which provides a fully manage database of these objects and more!
-
-https://www.ctibutler.com/
-
 ## Overview
 
 CWEs are [Common Weakness Enumerations (CWE's)](https://cwe.mitre.org/). CWE's are a community-developed list of software and hardware weakness types managed MITRE. They serve as a common language as a baseline for weakness identification, mitigation, and prevention efforts.
@@ -313,8 +307,6 @@ python3 cwe2stix.py --version 4.13 && mv stix2_objects/cwe-bundle.json bundle_st
 python3 cwe2stix.py --version 4.14 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_14.json && \
 python3 cwe2stix.py --version 4.15 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_15.json
 ```
-
-Note, [you can easily download historic CWE data from our cti_knowledge_base repository so you don't have to run this script](https://github.com/muchdogesec/cti_knowledge_base_store).
 
 ## Useful supporting tools
 
