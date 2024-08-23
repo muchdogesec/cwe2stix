@@ -157,6 +157,7 @@ cwe2stix models these using [STIX 2.1 Relationship Objects](https://docs.oasis-o
  	"relationship_type": "<Related_Weakness Nature>",
  	"source_ref": "weakness--<CURRENT WEAKNESS>",
  	"target_ref": "weakness--<Weaknesses.Weakness.Related_Weaknesses.Related_Weakness.CWE_ID>",
+    "description": "<CURRENT WEAKNESS name> is a <Related_Weakness Nature> of <Weaknesses.Weakness.Related_Weaknesses.Related_Weakness.name>",
     "object_marking_refs": [
         "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487",
         "<IMPORTED MARKING DEFINITION OBJECT>"
