@@ -257,13 +257,17 @@ def parse_relations(relations: dict, weakness) -> None:
         results = fs.query([Filter("id", "=", generated_id)])
         modified_date, submission_date = parse_date(weakness)
         if len(results) == 0:
+            source = get_related_object(weakness.get("@ID"), "weakness")
+            target = get_related_object(relation.get("@CWE_ID"), "weakness")
+            nature = relation.get("@Nature")
             rel = Relationship(
                 id=generated_id,
                 created=submission_date,
                 modified=modified_date,
-                relationship_type=relation.get("@Nature"),
-                source_ref=get_related_object(weakness.get("@ID"), "weakness").id,
-                target_ref=get_related_object(relation.get("@CWE_ID"), "weakness").id,
+                description=f"{source.name} is a {nature} of {target.name}",
+                relationship_type=nature,
+                source_ref=target.id,
+                target_ref=target.id,
                 created_by_ref=identity_ref.get("id"),
                 object_marking_refs=[TLP_CLEAR_MARKING_DEFINITION]+[marking_definition_refs.get("id")],
             )
