@@ -46,10 +46,10 @@ python3 cwe2stix.py --version <CWE VERSION NUMBER>
 
 * `--version` (optional): by default the script will download the latest available CWE file from the CWE website. If you want a specific version, you can pass the `--version` flag. e.g. `--version 4.13`. Note, only versions >= 4.5 are currently supported by this script.
 
-For example, to download the 4.13 version of CWEs;
+For example, to download the 4.15 version of CWEs;
 
 ```shell
-python3 cwe2stix.py --version 4.13
+python3 cwe2stix.py --version 4.15
 ```
 
 If no `--version` passed, the latest CWE file located at `https://cwe.mitre.org/data/xml/cwec_latest.xml.zip` will be downloaded.
