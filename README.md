@@ -1,8 +1,10 @@
 # cwe2stix
 
-A command line tool that turns MITRE CWEs into STIX 2.1 Objects.
-
 ## Overview
+
+![](docs/cwe2stix.png)
+
+A command line tool that turns MITRE CWEs into STIX 2.1 Objects.
 
 CWEs are [Common Weakness Enumerations (CWE's)](https://cwe.mitre.org/). CWE's are a community-developed list of software and hardware weakness types managed MITRE. They serve as a common language as a baseline for weakness identification, mitigation, and prevention efforts.
 
