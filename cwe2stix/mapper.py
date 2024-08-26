@@ -266,7 +266,7 @@ def parse_relations(relations: dict, weakness) -> None:
                 modified=modified_date,
                 description=f"{source.name} is a {nature} of {target.name}",
                 relationship_type=nature,
-                source_ref=target.id,
+                source_ref=source.id,
                 target_ref=target.id,
                 created_by_ref=identity_ref.get("id"),
                 object_marking_refs=[TLP_CLEAR_MARKING_DEFINITION]+[marking_definition_refs.get("id")],
