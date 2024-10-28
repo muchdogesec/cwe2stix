@@ -1,5 +1,9 @@
 # cwe2stix
 
+## Before you begin
+
+We host a full web API that includes all objects created by cwe2stix, [CTIButler](https://www.ctibutler.com/).
+
 ## Overview
 
 ![](docs/cwe2stix.png)
