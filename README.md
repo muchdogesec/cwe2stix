@@ -49,7 +49,7 @@ python3 cwe2stix.py --version <CWE VERSION NUMBER>
 For example, to download the 4.15 version of CWEs;
 
 ```shell
-python3 cwe2stix.py --version 4.15
+python3 cwe2stix.py --version 4.16
 ```
 
 If no `--version` passed, the latest CWE file located at `https://cwe.mitre.org/data/xml/cwec_latest.xml.zip` will be downloaded.
@@ -295,24 +295,6 @@ cwe2stix also creates a STIX 2.1 Bundle JSON object containing all the other STI
 To generate the id of the SRO, a UUIDv5 is generated using the namespace `d91de5c9-2d85-5cc9-97c0-c5ec8deb1a4b` and a md5 hash of all objects sorted in the bundle.
 
 Unlike the other STIX Objects, this means on every update a new bundle ID will be generated if any difference in objects or properties is observed.
-
-## Backfill old versions
-
-Here is a quick example of how to create bundles representing different versions of CWEs for comparison;
-
-```shell
-python3 cwe2stix.py --version 4.5 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_5.json && \
-python3 cwe2stix.py --version 4.6 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_6.json && \
-python3 cwe2stix.py --version 4.7 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_7.json && \
-python3 cwe2stix.py --version 4.8 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_8.json && \
-python3 cwe2stix.py --version 4.9 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_9.json && \
-python3 cwe2stix.py --version 4.10 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_10.json && \
-python3 cwe2stix.py --version 4.11 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_11.json && \
-python3 cwe2stix.py --version 4.12 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_12.json && \
-python3 cwe2stix.py --version 4.13 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_13.json && \
-python3 cwe2stix.py --version 4.14 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_14.json && \
-python3 cwe2stix.py --version 4.15 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_15.json
-```
 
 ## Useful supporting tools
 
