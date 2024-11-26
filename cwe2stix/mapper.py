@@ -9,7 +9,6 @@ from cwe2stix import utils
 from typing import List  # noqa F401
 from cwe2stix.config import namespace, fs, CWE2STIX_MARKING_DEFINITION, CWE2STIX_IDENTITY, WEAKNESS_EXTENSION_DEFINITION_URL, TLP_CLEAR_MARKING_DEFINITION
 from tqdm import tqdm
-from uuid import UUID
 
 external_reference_author_objects = {}
 object_list = []
@@ -203,10 +202,15 @@ def parse_vulnerability(weakness: dict):
     modified_date, submission_date = parse_date(weakness)
     print(marking_definition_refs.get("id"))
     common_consequences, likelihood_of_exploit, modes_of_introduction = parse_phase_properties(weakness)
+    weakness_name: str = weakness.get("@Name")
+    description = weakness.get('Description')
+    if extended_description:
+        description += "\n" + extended_description
+
     weakness_ = Weakness(
         id="weakness--" + str(generated_uuid),
-        name="{}".format(weakness.get("@Name")),
-        description=f"{weakness.get('Description')} {extended_description}",
+        name=weakness_name,
+        description=description,
         created=submission_date,
         modified=modified_date,
         external_references=external_references,
@@ -217,6 +221,7 @@ def parse_vulnerability(weakness: dict):
                 "extension_type": "new-sdo"
             }
         },
+        revoked=weakness_name.startswith('DEPRECATED:'),
         # custom_properties={"x_cwe_version": version},
         common_consequences=common_consequences,
         likelihood_of_exploit=likelihood_of_exploit,
