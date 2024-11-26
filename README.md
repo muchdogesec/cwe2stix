@@ -94,6 +94,7 @@ The key object to represent CWEs is a Weakness (this is a custom STIX objects):
 	"likelihood_of_exploit": "Likelihood_Of_Exploit",
 	"common_consequences": ["Common_Consequences.Consequence.Scope"],
 	"detection_methods": ["Detection_Methods.Detection_Method.Method"],
+    "revoked": "<true IF CWE NAME contains DEPRECATED:",
     "external_references": [
         {
          	"source_name": "cwe",
