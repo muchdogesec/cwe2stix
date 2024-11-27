@@ -297,6 +297,14 @@ To generate the id of the SRO, a UUIDv5 is generated using the namespace `d91de5
 
 Unlike the other STIX Objects, this means on every update a new bundle ID will be generated if any difference in objects or properties is observed.
 
+## Quickstart
+
+Download all data by running;
+
+```shell
+sh utilities/download_all.sh
+```
+
 ## Useful supporting tools
 
 * To generate STIX 2.1 Objects: [stix2 Python Lib](https://stix2.readthedocs.io/en/latest/)
