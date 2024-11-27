@@ -23,6 +23,12 @@ The code in this repository is a similar to the MITRE implementations for ATT&CK
 3. Converts them to STIX 2.1 Objects, if new version
 4. Stores the STIX 2.1 Objects in the file store
 
+## tl;dr
+
+[![cwe2stix](https://img.youtube.com/vi/HWRa8kLad80/0.jpg)](https://www.youtube.com/watch?v=HWRa8kLad80)
+
+[Watch the demo](https://www.youtube.com/watch?v=HWRa8kLad80).
+
 ## Installing the script
 
 To install cwe2stix;
