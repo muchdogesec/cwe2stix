@@ -1,5 +1,5 @@
 stix2
 xmltodict==0.13.0
 tqdm>=4.14
-requests==2.32.2
+requests==2.32.4
 https://github.com/muchdogesec/stix2extensions/releases/download/main-2024-11-27-15-30-32/stix2extensions-0.0.2b1-py3-none-any.whl
