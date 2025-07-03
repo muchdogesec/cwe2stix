@@ -1,4 +1,4 @@
-name: Run Unit and Schema Tests
+name: Run Unittests and Upload Coverage
 
 permissions:
   contents: read
