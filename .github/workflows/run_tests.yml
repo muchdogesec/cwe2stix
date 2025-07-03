@@ -28,7 +28,7 @@ jobs:
       - name: run unit tests with pytest+coverage
         id: test-endpoints
         run: |
-          pip install -r requirements.txt
+          pip install -r requirements.txt pytest pytest-cov
           export PYTHONPATH=.
 
           pytest --cov --cov-branch --cov-report=xml --junitxml=junit.xml -o junit_family=legacy tests/
