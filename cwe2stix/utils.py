@@ -48,8 +48,7 @@ def load_file_from_url(url):
         response.raise_for_status()  # Raise an HTTPError for bad responses
         return response.text
     except requests.exceptions.RequestException as e:
-        print(f"Error loading JSON from {url}: {e}")
-        return None
+        raise
 
 
 def generate_md5_from_list(stix_objects: list) -> str:
