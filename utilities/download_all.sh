@@ -1,3 +1,4 @@
+mkdir -p bundle_store/
 python3 cwe2stix.py --version 4.5 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_5.json && \
 python3 cwe2stix.py --version 4.6 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_6.json && \
 python3 cwe2stix.py --version 4.7 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_7.json && \
