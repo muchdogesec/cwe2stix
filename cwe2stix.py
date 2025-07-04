@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser()
 
 
 def main(version=None):
-    Cwe2Stix(version=version).run()
+    Cwe2Stix(version=version).run_and_write()
 
 
 if __name__ == "__main__":
