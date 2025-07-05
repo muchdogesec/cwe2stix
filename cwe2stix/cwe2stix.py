@@ -104,7 +104,7 @@ class Cwe2Stix:
                 ),
                 url=xml_utils.getTextFromNode(
                     xml_utils.firstOrNone(c.getElementsByTagName("URL"))
-                ),
+                ) or None,
                 external_id=ref_id,
             )
         return external_reference_map
