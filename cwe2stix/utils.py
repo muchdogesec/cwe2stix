@@ -3,7 +3,7 @@ import json
 import logging
 import os
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 
 import hashlib
 import requests
@@ -38,7 +38,7 @@ def write_json_file(folder, filename, data):
 
 def parse_datetime(date):
     if date:
-        return datetime.strptime(date, "%Y-%m-%d")
+        return datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=UTC)
 
 
 @lru_cache

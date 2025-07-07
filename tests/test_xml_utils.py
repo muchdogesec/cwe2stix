@@ -1,11 +1,10 @@
+from datetime import UTC, datetime
 from xml.dom.minidom import parseString
 from cwe2stix import xml_utils
 from unittest.mock import patch
 
 
-@patch("cwe2stix.xml_utils.utils.parse_datetime")
-def test_parse_dates_extracts_submission_and_modification(mock_parse_dt):
-    mock_parse_dt.side_effect = lambda x: f"parsed:{x}"
+def test_parse_dates_extracts_submission_and_modification():
 
     xml = """
     <Weakness>
@@ -25,9 +24,27 @@ def test_parse_dates_extracts_submission_and_modification(mock_parse_dt):
     el = parseString(xml).documentElement
     modified, submitted = xml_utils.parse_dates(el)
 
-    assert submitted == "parsed:2014-01-01"
+    assert submitted == datetime(2014, 1, 1, tzinfo=UTC)
     # should use the *latest* Modification_Date
-    assert modified == "parsed:2016-06-06"
+    assert modified == datetime(2016, 6, 6, tzinfo=UTC)
+
+def test_parse_dates_with_submission_and_no_modification():
+
+    xml = """
+    <Weakness>
+        <Content_History>
+            <Submission>
+                <Submission_Date>2014-01-01</Submission_Date>
+            </Submission>
+        </Content_History>
+    </Weakness>
+    """
+    el = parseString(xml).documentElement
+    modified, submitted = xml_utils.parse_dates(el)
+
+    assert submitted == datetime(2014, 1, 1, tzinfo=UTC)
+    # should use submission date as modified
+    assert modified == submitted
 
 @patch("cwe2stix.xml_utils.utils.parse_datetime")
 def test_parse_dates_returns_none_on_missing_history(mock_parse_dt):
