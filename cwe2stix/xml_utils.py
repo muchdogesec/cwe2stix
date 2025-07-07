@@ -30,6 +30,7 @@ def parse_dates(el: Element):
     submission_date = getTextFromNode(firstOrNone(history_el.getElementsByTagName('Submission_Date')))
     assert submission_date
     modification_date = getTextFromNode(firstOrNone(history_el.getElementsByTagName('Modification_Date')[::-1]))
+    modification_date = modification_date or submission_date
     return utils.parse_datetime(modification_date), utils.parse_datetime(submission_date)
 
 def parse_common_consequences(weakness_el: Element):
