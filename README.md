@@ -1,5 +1,7 @@
 # cwe2stix
 
+[![codecov](https://codecov.io/gh/muchdogesec/cwe2stix/graph/badge.svg?token=Y3UL0VKOUX)](https://codecov.io/gh/muchdogesec/cwe2stix)
+
 ## Before you begin
 
 We host a full web API that includes all objects created by cwe2stix, [CTIButler](https://www.ctibutler.com/).
