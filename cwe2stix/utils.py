@@ -28,8 +28,7 @@ def map_bundle(object_list):
 
 def write_json_file(folder, filename, data):
     logging.info(f"Creating folder or searching: {folder}")
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+    os.makedirs(folder, exist_ok=True)
     logging.info(f"Folder created or already exists: {folder}")
     json_file = os.path.join(folder, filename)
     with open(json_file, "w") as file:
@@ -40,15 +39,11 @@ def parse_datetime(date):
     if date:
         return datetime.strptime(date, "%Y-%m-%d").replace(tzinfo=UTC)
 
-
 @lru_cache
 def load_file_from_url(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise an HTTPError for bad responses
-        return response.text
-    except requests.exceptions.RequestException as e:
-        raise
+    response = requests.get(url)
+    response.raise_for_status()  # Raise an HTTPError for bad responses
+    return response.text
 
 
 def generate_md5_from_list(stix_objects: list) -> str:

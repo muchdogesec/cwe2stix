@@ -34,7 +34,7 @@ class Cwe2Stix:
         self.all_objects = {}
         ###
         self.identity_obj = json.loads(
-            utils.load_file_from_url(config.CWE2STIX_IDENTITY)
+            utils.load_file_from_url(config.DOGESEC_IDENTITY)
         )
         self.add_object(self.identity_obj)
         self.marking_definition_obj = json.loads(
