@@ -11,4 +11,5 @@ python3 cwe2stix.py --version 4.13 && mv stix2_objects/cwe-bundle.json bundle_st
 python3 cwe2stix.py --version 4.14 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_14.json && \
 python3 cwe2stix.py --version 4.15 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_15.json && \
 python3 cwe2stix.py --version 4.16 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_16.json && \
-python3 cwe2stix.py --version 4.17 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_17.json
+python3 cwe2stix.py --version 4.17 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_17.json && \
+python3 cwe2stix.py --version 4.18 && mv stix2_objects/cwe-bundle.json bundle_store/cwe-bundle-v4_18.json
