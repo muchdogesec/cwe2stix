@@ -28,6 +28,7 @@ def test_parse_dates_extracts_submission_and_modification():
     # should use the *latest* Modification_Date
     assert modified == datetime(2016, 6, 6, tzinfo=UTC)
 
+
 def test_parse_dates_with_submission_and_no_modification():
 
     xml = """
@@ -45,6 +46,7 @@ def test_parse_dates_with_submission_and_no_modification():
     assert submitted == datetime(2014, 1, 1, tzinfo=UTC)
     # should use submission date as modified
     assert modified == submitted
+
 
 @patch("cwe2stix.xml_utils.utils.parse_datetime")
 def test_parse_dates_returns_none_on_missing_history(mock_parse_dt):
@@ -65,6 +67,7 @@ def test_parse_common_consequences_returns_scopes():
     el = parseString(xml).documentElement
     scopes = xml_utils.parse_common_consequences(el)
     assert scopes == ["Integrity", "Confidentiality", "Access Control"]
+
 
 def test_parse_common_consequences_empty_when_missing():
     el = parseString("<Weakness></Weakness>").documentElement
@@ -88,10 +91,10 @@ def test_parse_detection_methods_extracts_methods():
     methods = xml_utils.parse_detection_methods(el)
     assert methods == ["Static Analysis", "Fuzz Testing"]
 
+
 def test_parse_detection_methods_empty_when_missing():
     el = parseString("<Weakness></Weakness>").documentElement
     assert xml_utils.parse_detection_methods(el) == []
-
 
 
 def test_parse_modes_of_introduction_phases():
@@ -113,10 +116,10 @@ def test_parse_modes_of_introduction_phases():
     phases = xml_utils.parse_modes_of_introduction(el)
     assert phases == ["Architecture and Design", "Implementation"]
 
+
 def test_parse_modes_of_introduction_empty_when_missing():
     el = parseString("<Weakness></Weakness>").documentElement
     assert xml_utils.parse_modes_of_introduction(el) == []
-
 
 
 def test_parse_description_includes_extended_description():
@@ -134,10 +137,14 @@ def test_parse_description_includes_extended_description():
     """
     el = parseString(xml).documentElement
     desc = xml_utils.parse_description(el)
-    assert "The software creates an immutable text string using string concatenation operations." in desc
+    assert (
+        "The software creates an immutable text string using string concatenation operations."
+        in desc
+    )
     assert "When building a string via a looping feature" in desc
     assert "Extended_Description" not in desc
     assert "<span>" in desc  # confirms tag rename to span
+
 
 def test_parse_description_only_simple():
     xml = "<Weakness><Description>Basic only</Description></Weakness>"

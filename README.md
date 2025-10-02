@@ -80,7 +80,7 @@ https://miro.com/app/board/uXjVKpOg6bM=/
 
 ### Identity / Marking Definition / Extension Definition
 
-* Identity: https://raw.githubusercontent.com/muchdogesec/stix4doge/main/objects/identity/cwe2stix.json
+* Identity: https://raw.githubusercontent.com/muchdogesec/stix4doge/main/objects/identity/dogesec.json
 * Marking Definition: https://raw.githubusercontent.com/muchdogesec/stix4doge/main/objects/marking-definition/cwe2stix.json
 * Extension Definition: https://raw.githubusercontent.com/muchdogesec/stix2extensions/main/extension-definitions/sdos/weakness.json
 

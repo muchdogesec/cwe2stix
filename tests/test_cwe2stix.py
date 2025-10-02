@@ -10,26 +10,46 @@ import pytest
 from unittest.mock import MagicMock
 from xml.dom.minidom import parseString
 
+
 @pytest.fixture
 def fake_json_obj():
     return {"id": "identity--1234", "type": "identity", "name": "Fake Identity"}
 
+
 @pytest.fixture
 def fake_marking_obj():
-    return {"id": "marking-definition--d91de5c9-2d85-5cc9-97c0-c5ec8deb1a4b", "type": "marking-definition", "name": "dummy object"}
+    return {
+        "id": "marking-definition--d91de5c9-2d85-5cc9-97c0-c5ec8deb1a4b",
+        "type": "marking-definition",
+        "name": "dummy object",
+    }
+
 
 @pytest.fixture
 def fake_extension_obj():
-    return {"id": "extension--91011", "type": "extension-definition", "name": "Weakness"}
+    return {
+        "id": "extension--91011",
+        "type": "extension-definition",
+        "name": "Weakness",
+    }
 
-def test_cwe2stix_initialization_loads_objects(fake_json_obj, fake_marking_obj, fake_extension_obj):
+
+def test_cwe2stix_initialization_loads_objects(
+    fake_json_obj, fake_marking_obj, fake_extension_obj
+):
     # Arrange
     with patch("cwe2stix.utils.load_file_from_url") as mock_load:
-        mock_load.side_effect = [json.dumps(fake_json_obj), json.dumps(fake_marking_obj), json.dumps(fake_extension_obj)]
+        mock_load.side_effect = [
+            json.dumps(fake_json_obj),
+            json.dumps(fake_marking_obj),
+            json.dumps(fake_extension_obj),
+        ]
 
         # Act
         cwe2stix_obj = Cwe2Stix()
-        assert mock_load.call_count == 3, "load_file_from_url must be called thrice for identity_ref, marking ref and extension def"
+        assert (
+            mock_load.call_count == 3
+        ), "load_file_from_url must be called thrice for identity_ref, marking ref and extension def"
 
         # Assert
         assert fake_json_obj["id"] in cwe2stix_obj.all_objects
@@ -37,34 +57,37 @@ def test_cwe2stix_initialization_loads_objects(fake_json_obj, fake_marking_obj, 
         assert fake_extension_obj["id"] in cwe2stix_obj.all_objects
         # Should store marking refs properly
         assert fake_marking_obj["id"] in cwe2stix_obj.object_marking_refs
-        assert cwe2stix_obj.object_marking_refs == ["marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487", "marking-definition--d91de5c9-2d85-5cc9-97c0-c5ec8deb1a4b"]
+        assert cwe2stix_obj.object_marking_refs == [
+            "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487",
+            "marking-definition--d91de5c9-2d85-5cc9-97c0-c5ec8deb1a4b",
+        ]
 
 
 def test_add_object(cwe2stix_object):
     cwe2stix_object.writes_files = True
     with patch("cwe2stix.cwe2stix.FileSystemStore.add") as mock_fs_add:
-        obj1 = {'id': 'duplicated-object--1', 'name': 'first entry'}
-        obj2 = {'id': 'duplicated-object--1', 'name': 'second entry'}
+        obj1 = {"id": "duplicated-object--1", "name": "first entry"}
+        obj2 = {"id": "duplicated-object--1", "name": "second entry"}
         cwe2stix_object.add_object(obj1)
-        assert 'duplicated-object--1' in cwe2stix_object.all_objects
+        assert "duplicated-object--1" in cwe2stix_object.all_objects
         mock_fs_add.assert_called_once_with(obj1)
         mock_fs_add.reset_mock()
         cwe2stix_object.add_object(obj2)
-        assert 'duplicated-object--1' in cwe2stix_object.all_objects
+        assert "duplicated-object--1" in cwe2stix_object.all_objects
         mock_fs_add.assert_not_called()
 
 
 def test_parse_sets_catalog_and_calls_helpers(cwe2stix_object):
     cwe = cwe2stix_object
-    
+
     # Prepare minimal XML with Version attribute
-    xml_content = '''<?xml version="1.0"?>
+    xml_content = """<?xml version="1.0"?>
     <Weakness_Catalog Version="4.7">
         <External_References/>
         <Weaknesses/>
         <Categories/>
     </Weakness_Catalog>
-    '''
+    """
     cwe.xml_bytes = xml_content.encode()
 
     # Patch the helper methods
@@ -83,8 +106,6 @@ def test_parse_sets_catalog_and_calls_helpers(cwe2stix_object):
     cwe.parse_external_references.assert_called_once_with(cwe.catalog)
     cwe.map_weaknesses.assert_called_once()
     cwe.map_categories.assert_called_once()
-
-
 
 
 def test_map_weaknesses_adds_objects_and_relationships(cwe2stix_object):
@@ -113,14 +134,23 @@ def test_map_weaknesses_adds_objects_and_relationships(cwe2stix_object):
     cwe.catalog = parseString(xml_content).documentElement
 
     # Map the fake weaknesses by ID to ensure Related_Weakness can resolve
-    cwe.parse_weakness = MagicMock(side_effect=lambda el: Weakness(**{
-        "name": el.getAttribute("Name"),
-        "created": "2025-01-01T00:00:00Z",
-        "modified": "2025-01-01T00:00:00Z",
-        "external_references": [{"external_id": f"CWE-{el.getAttribute('ID')}", "source_name": "cwe"}],
-        "created_by_ref": cwe.identity_obj["id"],
-        "object_marking_refs": cwe.object_marking_refs,
-    }))
+    cwe.parse_weakness = MagicMock(
+        side_effect=lambda el: Weakness(
+            **{
+                "name": el.getAttribute("Name"),
+                "created": "2025-01-01T00:00:00Z",
+                "modified": "2025-01-01T00:00:00Z",
+                "external_references": [
+                    {
+                        "external_id": f"CWE-{el.getAttribute('ID')}",
+                        "source_name": "cwe",
+                    }
+                ],
+                "created_by_ref": cwe.identity_obj["id"],
+                "object_marking_refs": cwe.object_marking_refs,
+            }
+        )
+    )
 
     cwe.add_object = MagicMock()
     print(cwe.map_weaknesses)
@@ -137,17 +167,24 @@ def test_map_weaknesses_adds_objects_and_relationships(cwe2stix_object):
     cwe200_id = cwe.weakness_by_id["CWE-200"].id
 
     # Should add both Weakness objects
-    cwe.add_object.assert_has_calls([call(obj) for obj in cwe.weakness_by_id.values()], any_order=True)
+    cwe.add_object.assert_has_calls(
+        [call(obj) for obj in cwe.weakness_by_id.values()], any_order=True
+    )
 
     # Should also add the generated Relationship
-    relationships = [call[0][0] for call in cwe.add_object.call_args_list if call[0][0]["type"]=='relationship']
+    relationships = [
+        call[0][0]
+        for call in cwe.add_object.call_args_list
+        if call[0][0]["type"] == "relationship"
+    ]
     assert relationships, "relationships must've been added"
     relationship_obj = relationships[0]
     assert relationship_obj.source_ref == cwe100_id
     assert relationship_obj.target_ref == cwe200_id
-    assert relationship_obj.external_references == [{"external_id": "CWE-100", "source_name": "cwe"}, {"external_id": "CWE-200", "source_name": "cwe"}]
-
-
+    assert relationship_obj.external_references == [
+        {"external_id": "CWE-100", "source_name": "cwe"},
+        {"external_id": "CWE-200", "source_name": "cwe"},
+    ]
 
 
 def test_map_categories_adds_groupings(cwe2stix_object):
@@ -172,10 +209,12 @@ def test_map_categories_adds_groupings(cwe2stix_object):
 
     # Mock parse_category to return a fake Grouping only for the non-deprecated
     fake_group = {"id": "grouping--1000"}
+
     def fake_parse_category(el):
         if el.getAttribute("ID") == "1000":
             return fake_group
         return None
+
     cwe.parse_category = MagicMock(side_effect=fake_parse_category)
     cwe.add_object = MagicMock()
 
@@ -229,13 +268,17 @@ def test_parse_category_builds_grouping(cwe2stix_object):
         # Assert
         assert grouping is not None
         assert grouping.name == "SFP Secondary Cluster: Unexpected Entry Points"
-        assert grouping.description.startswith("This category identifies Software Fault Patterns")
+        assert grouping.description.startswith(
+            "This category identifies Software Fault Patterns"
+        )
         assert grouping.context == "unspecified"
         assert grouping.external_references[0].source_name == "cwe_category"
         assert grouping.external_references[0].external_id == "1002"
         # Should have exactly 4 object_refs from weaknesses found
-        assert grouping.object_refs == ["weakness--b52c3e67-202f-4c89-93ba-1022812e1dcf", "weakness--0d80e58f-63cf-40c7-bbfa-605a45dbcde0"]
-
+        assert grouping.object_refs == [
+            "weakness--b52c3e67-202f-4c89-93ba-1022812e1dcf",
+            "weakness--0d80e58f-63cf-40c7-bbfa-605a45dbcde0",
+        ]
 
         # test, returns None
         cwe.weakness_by_id = {}
@@ -251,17 +294,26 @@ from xml.dom.minidom import parseString
 @patch("cwe2stix.cwe2stix.xml_utils.parse_dates")
 @patch("cwe2stix.cwe2stix.xml_utils.parse_description")
 @patch("cwe2stix.cwe2stix.map_external_references")
-def test_parse_weakness_builds_weakness_sdo(mock_map_refs, mock_get_description, mock_parse_dates, cwe2stix_object):
+def test_parse_weakness_builds_weakness_sdo(
+    mock_map_refs, mock_get_description, mock_parse_dates, cwe2stix_object
+):
     cwe = cwe2stix_object
 
     # Setup return values for utilities
-    mock_parse_dates.return_value = ("2020-01-01T00:00:00.000Z", "2019-01-01T00:00:00.000Z")
+    mock_parse_dates.return_value = (
+        "2020-01-01T00:00:00.000Z",
+        "2019-01-01T00:00:00.000Z",
+    )
     mock_map_refs.return_value = [
-        {"source_name": "cwe", "external_id": "CWE-1023", "url": "http://cwe.mitre.org/data/definitions/1023.html"}
+        {
+            "source_name": "cwe",
+            "external_id": "CWE-1023",
+            "url": "http://cwe.mitre.org/data/definitions/1023.html",
+        }
     ]
 
     # Parse the given Weakness XML snippet
-    xml_content = '''
+    xml_content = """
     <Weakness ID="1023" Name="Incomplete Comparison with Missing Factors" Abstraction="Class" Structure="Simple" Status="Incomplete">
         <Description>The software performs a comparison between entities...</Description>
         <Extended_Description>An incomplete comparison can lead to issues.</Extended_Description>
@@ -278,7 +330,7 @@ def test_parse_weakness_builds_weakness_sdo(mock_map_refs, mock_get_description,
             </Consequence>
         </Common_Consequences>
     </Weakness>
-    '''
+    """
     weakness_el = parseString(xml_content).documentElement
     ext_ref_map = []
 
@@ -289,13 +341,18 @@ def test_parse_weakness_builds_weakness_sdo(mock_map_refs, mock_get_description,
     assert weakness_obj.id.startswith("weakness--")
     assert weakness_obj.name == "Incomplete Comparison with Missing Factors"
     assert weakness_obj.description == str(mock_get_description.return_value)
-    assert weakness_obj.created.strftime('%Y-%m-%d') == "2019-01-01"
-    assert weakness_obj.modified.strftime('%Y-%m-%dT%H:%M:%SZ') == "2020-01-01T00:00:00Z"
+    assert weakness_obj.created.strftime("%Y-%m-%d") == "2019-01-01"
+    assert (
+        weakness_obj.modified.strftime("%Y-%m-%dT%H:%M:%SZ") == "2020-01-01T00:00:00Z"
+    )
     assert weakness_obj.created_by_ref == cwe.identity_obj["id"]
     assert weakness_obj.object_marking_refs == cwe.object_marking_refs
 
     # Assert extensions
-    assert "extension-definition--31725edc-7d81-5db7-908a-9134f322284a" in weakness_obj.extensions
+    assert (
+        "extension-definition--31725edc-7d81-5db7-908a-9134f322284a"
+        in weakness_obj.extensions
+    )
 
     # Assert external references
     assert weakness_obj.external_references == mock_map_refs.return_value
@@ -303,9 +360,6 @@ def test_parse_weakness_builds_weakness_sdo(mock_map_refs, mock_get_description,
     # Assert lists parsed
     assert isinstance(weakness_obj.common_consequences, list)
     assert isinstance(weakness_obj.modes_of_introduction, list)
-
-
-
 
 
 def test_parse_external_references_builds_reference_map(cwe2stix_object):
@@ -337,7 +391,10 @@ def test_parse_external_references_builds_reference_map(cwe2stix_object):
     catalog = parseString(xml_content).documentElement
 
     # Patch xml_utils functions used in parse_external_references
-    with patch("cwe2stix.xml_utils.firstOrNone", side_effect=lambda lst: lst[0] if lst else None):        
+    with patch(
+        "cwe2stix.xml_utils.firstOrNone",
+        side_effect=lambda lst: lst[0] if lst else None,
+    ):
         # Act
         ref_map = cwe.parse_external_references(catalog)
 
@@ -369,7 +426,11 @@ def test_parse_external_references_builds_reference_map(cwe2stix_object):
 def test_map_external_references_builds_refs_correctly():
     # Setup fake reference map
     reference_map = {
-        "REF-123": {"source_name": "nist", "external_id": "SP-800", "description": "NIST Guide"},
+        "REF-123": {
+            "source_name": "nist",
+            "external_id": "SP-800",
+            "description": "NIST Guide",
+        },
     }
 
     # XML with References, Taxonomy_Mapping and Related_Attack_Pattern
@@ -406,28 +467,24 @@ def test_map_external_references_builds_refs_correctly():
     assert nist_ref["external_id"] == "SP-800"
 
     # Assert includes Taxonomy_Mapping
-    taxonomy_ref = next((r for r in refs if r['source_name'] == "OWASP Top Ten"), None)
+    taxonomy_ref = next((r for r in refs if r["source_name"] == "OWASP Top Ten"), None)
     assert taxonomy_ref is not None
     assert taxonomy_ref.external_id == "5"
     assert taxonomy_ref.description == "Broken Access Control"
 
     # Assert includes CAPEC
-    capec_ref = next((r for r in refs if r['source_name'] == "capec"), None)
+    capec_ref = next((r for r in refs if r["source_name"] == "capec"), None)
     assert capec_ref is not None
     assert capec_ref.external_id == "CAPEC-88"
     assert capec_ref.url == "https://capec.mitre.org/data/definitions/88.html"
 
 
-
 @patch("cwe2stix.cwe2stix.zipfile.ZipFile")
 @patch("cwe2stix.cwe2stix.requests.get")
-@pytest.mark.parametrize(
-    'writes_files',
-    [
-        True, False
-    ]
-)
-def test_process_download_downloads_and_extracts(mock_get, mock_zipfile, cwe2stix_object, writes_files):
+@pytest.mark.parametrize("writes_files", [True, False])
+def test_process_download_downloads_and_extracts(
+    mock_get, mock_zipfile, cwe2stix_object, writes_files
+):
     cwe = cwe2stix_object
     cwe.writes_files = writes_files  # test also the file writing branch
 
@@ -449,8 +506,9 @@ def test_process_download_downloads_and_extracts(mock_get, mock_zipfile, cwe2sti
     mock_zipfile.return_value.__enter__.return_value = mock_zip_ref
 
     # Patch Path.mkdir and Path.write_bytes so no real I/O happens
-    with patch("pathlib.Path.mkdir") as mock_mkdir, \
-         patch("pathlib.Path.write_bytes") as mock_write_bytes:
+    with patch("pathlib.Path.mkdir") as mock_mkdir, patch(
+        "pathlib.Path.write_bytes"
+    ) as mock_write_bytes:
 
         # Act
         cwe.process_download()
@@ -473,3 +531,10 @@ def test_process_download_downloads_and_extracts(mock_get, mock_zipfile, cwe2sti
     else:
         mock_mkdir.assert_not_called()
         mock_write_bytes.assert_not_called()
+
+
+def test_identity_ref(cwe2stix_object):
+    assert (
+        cwe2stix_object.identity_obj["id"]
+        == "identity--9779a2db-f98c-5f4b-8d08-8ee04e02dbb5"
+    )
