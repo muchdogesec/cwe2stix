@@ -4,6 +4,8 @@
 
 ## Before you begin
 
+![](docs/ctibutler.png)
+
 We host a full web API that includes all objects created by cwe2stix, [CTIButler](https://www.ctibutler.com/).
 
 ## Overview
@@ -24,12 +26,6 @@ The code in this repository is a similar to the MITRE implementations for ATT&CK
 2. Checks version of CWE XML
 3. Converts them to STIX 2.1 Objects, if new version
 4. Stores the STIX 2.1 Objects in the file store
-
-## tl;dr
-
-[![cwe2stix](https://img.youtube.com/vi/HWRa8kLad80/0.jpg)](https://www.youtube.com/watch?v=HWRa8kLad80)
-
-[Watch the demo](https://www.youtube.com/watch?v=HWRa8kLad80).
 
 ## Installing the script
 
@@ -74,9 +70,7 @@ To handle versions, on the first run a `CWE_VERSION` file is created, listing th
 
 This XML file is what cwe2stix uses to generate the STIX objects.
 
-A high-level overview of the way the STIX objects are linked can be viewed here;
-
-https://miro.com/app/board/uXjVKpOg6bM=/
+![](docs/cwe2stix-bundle-structure.jpg)
 
 ### Identity / Marking Definition / Extension Definition
 
@@ -94,7 +88,7 @@ The key object to represent CWEs is a Weakness (this is a custom STIX objects):
     "spec_version": "2.1",
     "id": "weakness--<UUIDV5 GENERATION LOGIC>",
     "name": "<CWE NAME>",
-    "created_by_ref": "<IMPORTED IDENTITY OBJECT>",
+    "created_by_ref": "identity--9779a2db-f98c-5f4b-8d08-8ee04e02dbb5",
     "created": "<Weaknesses.Weakness.Submission_Date>",
     "modified": "<Weaknesses.Weakness.Modification_Date> (latest date)",
     "description": "<Weaknesses.Weakness.Description> <Weaknesses.Weakness.Extended_Description>",
@@ -128,7 +122,7 @@ The key object to represent CWEs is a Weakness (this is a custom STIX objects):
     ],
     "object_marking_refs": [
         "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487",
-        "<IMPORTED MARKING DEFINITION OBJECT>"
+        "marking-definition--d91de5c9-2d85-5cc9-97c0-c5ec8deb1a4b"
     ],
     "extensions": {
         "<IMPORTED EXTENSION DEFINITION>": {
@@ -160,7 +154,7 @@ cwe2stix models these using [STIX 2.1 Relationship Objects](https://docs.oasis-o
  	"type": "relationship",
  	"spec_version": "2.1",
  	"id": "relationship--<UUIDV5 GENERATION LOGIC>",
- 	"created_by_ref": "<IMPORTED IDENTITY OBJECT>",
+ 	"created_by_ref": "identity--9779a2db-f98c-5f4b-8d08-8ee04e02dbb5",
  	"created": "<CREATED TIME OF MOST RECENT CWE OBJECT IN PAIR>",
  	"modified": "<CREATED TIME OF MOST RECENT CWE OBJECT IN PAIR>",
  	"relationship_type": "<Related_Weakness Nature>",
@@ -169,7 +163,7 @@ cwe2stix models these using [STIX 2.1 Relationship Objects](https://docs.oasis-o
     "description": "<CURRENT WEAKNESS name> is a <Related_Weakness Nature> of <Weaknesses.Weakness.Related_Weaknesses.Related_Weakness.name>",
     "object_marking_refs": [
         "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487",
-        "<IMPORTED MARKING DEFINITION OBJECT>"
+        "marking-definition--d91de5c9-2d85-5cc9-97c0-c5ec8deb1a4b"
     ],
 }
 ```
@@ -242,7 +236,7 @@ Grouping SDOs are modelled from CWE entries as follows
     "type": "grouping",
     "spec_version": "2.1",
     "id": "grouping--<UUIDV5 LOGIC>",
-    "created_by_ref": "<IMPORTED IDENTITY OBJECT>",
+    "created_by_ref": "identity--9779a2db-f98c-5f4b-8d08-8ee04e02dbb5",
     "created": "<Content_History.Submission_Date>",
     "modified": "<Modification.Modificaton Date> (latest)",
     "name": "<CATEGORY.NAME>",
@@ -262,7 +256,7 @@ Grouping SDOs are modelled from CWE entries as follows
     ],
     "object_marking_refs": [
         "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487",
-        "<IMPORTED MARKING DEFINITION OBJECT>"
+        "marking-definition--d91de5c9-2d85-5cc9-97c0-c5ec8deb1a4b"
     ],
     "object_refs": [
         "<STIX IDs OF ALL CWEs LISTED IN CATEGORY.Relationships>"
