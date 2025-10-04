@@ -72,6 +72,8 @@ This XML file is what cwe2stix uses to generate the STIX objects.
 
 ![](docs/cwe2stix-bundle-structure.jpg)
 
+[Source](https://miro.com/app/board/uXjVKpOg6bM=/)
+
 ### Identity / Marking Definition / Extension Definition
 
 * Identity: https://raw.githubusercontent.com/muchdogesec/stix4doge/main/objects/identity/dogesec.json
