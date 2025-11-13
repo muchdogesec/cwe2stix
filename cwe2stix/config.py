@@ -23,5 +23,5 @@ cwe2stix_version_filename = "CWE_VERSION"
 
 DOGESEC_IDENTITY = "https://raw.githubusercontent.com/muchdogesec/stix4doge/main/objects/identity/dogesec.json"
 CWE2STIX_MARKING_DEFINITION = "https://raw.githubusercontent.com/muchdogesec/stix4doge/main/objects/marking-definition/cwe2stix.json"
-WEAKNESS_EXTENSION_DEFINITION_URL = "https://raw.githubusercontent.com/muchdogesec/stix2extensions/main/extension-definitions/sdos/weakness.json"
+WEAKNESS_EXTENSION_DEFINITION_URL = "https://raw.githubusercontent.com/muchdogesec/stix2extensions/main/automodel_generated/extension-definitions/sdos/weakness.json"
 TLP_CLEAR_MARKING_DEFINITION = "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
