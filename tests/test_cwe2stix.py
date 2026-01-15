@@ -207,15 +207,15 @@ def test_map_categories_adds_groupings(cwe2stix_object):
     """
     cwe.catalog = parseString(xml_content).documentElement
 
-    # Mock parse_category to return a fake Grouping only for the non-deprecated
+    # Mock parse_category_or_view to return a fake Grouping only for the non-deprecated
     fake_group = {"id": "grouping--1000"}
 
-    def fake_parse_category(el):
+    def fake_parse_category_or_view(el):
         if el.getAttribute("ID") == "1000":
             return fake_group
         return None
 
-    cwe.parse_category = MagicMock(side_effect=fake_parse_category)
+    cwe.parse_category_or_view = MagicMock(side_effect=fake_parse_category_or_view)
     cwe.add_object = MagicMock()
 
     # Act
@@ -225,7 +225,7 @@ def test_map_categories_adds_groupings(cwe2stix_object):
     cwe.add_object.assert_called_once_with(fake_group)
 
 
-def test_parse_category_builds_grouping(cwe2stix_object):
+def test_parse_category_or_view_builds_grouping(cwe2stix_object):
     cwe = cwe2stix_object
 
     # Simulate weaknesses already parsed and in the dict
@@ -263,7 +263,7 @@ def test_parse_category_builds_grouping(cwe2stix_object):
         mock_dates.return_value = ("2025-01-01T00:00:00Z", "2025-01-01T00:00:00Z")
 
         # Act
-        grouping = cwe.parse_category(category_el)
+        grouping = cwe.parse_category_or_view(category_el)
 
         # Assert
         assert grouping is not None
@@ -273,7 +273,7 @@ def test_parse_category_builds_grouping(cwe2stix_object):
         )
         assert grouping.context == "unspecified"
         assert grouping.external_references[0].source_name == "cwe_category"
-        assert grouping.external_references[0].external_id == "1002"
+        assert grouping.external_references[0].external_id == "CWE-1002"
         # Should have exactly 4 object_refs from weaknesses found
         assert grouping.object_refs == [
             "weakness--b52c3e67-202f-4c89-93ba-1022812e1dcf",
@@ -282,7 +282,7 @@ def test_parse_category_builds_grouping(cwe2stix_object):
 
         # test, returns None
         cwe.weakness_by_id = {}
-        grouping = cwe.parse_category(category_el)
+        grouping = cwe.parse_category_or_view(category_el)
         assert grouping is None
 
 
