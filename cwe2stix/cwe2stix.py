@@ -51,9 +51,9 @@ class Cwe2Stix:
         ]
 
     def add_object(self, obj):
-        if obj['id'] in self.all_objects:
+        if obj["id"] in self.all_objects:
             return
-        self.all_objects[obj['id']] = obj
+        self.all_objects[obj["id"]] = obj
 
         if self.writes_files:
             self.fs.add(obj)
@@ -84,6 +84,7 @@ class Cwe2Stix:
         self.external_reference_map = self.parse_external_references(self.catalog)
         self.map_weaknesses()
         self.map_categories()
+        self.map_views()
 
     def parse_external_references(self, catalog: Element):
         external_reference_map = {}
@@ -104,7 +105,8 @@ class Cwe2Stix:
                 ),
                 url=xml_utils.getTextFromNode(
                     xml_utils.firstOrNone(c.getElementsByTagName("URL"))
-                ) or None,
+                )
+                or None,
                 external_id=ref_id,
             )
         return external_reference_map
@@ -155,24 +157,15 @@ class Cwe2Stix:
             )
             self.add_object(relationship)
 
-    def map_categories(self):
-        categories_el = xml_utils.firstOrNone(
-            self.catalog.getElementsByTagName("Categories")
-        )
-        if not categories_el:
-            return
-        for el in categories_el.getElementsByTagName("Category"):
-            if el.getAttribute("Status") == "Deprecated":
-                continue
-            group = self.parse_category(el)
-            if group:
-                self.add_object(group)
-
-    def parse_category(self, category_el: Element):
+    def parse_category_or_view(self, category_el: Element):
+        group_type = category_el.tagName.lower()
         object_refs = []
         group_id = category_el.getAttribute("ID")
         group_name = category_el.getAttribute("Name")
-        generated_uuid = uuid.uuid5(config.namespace, group_name)
+        generated_uuid = uuid.uuid5(
+            config.namespace,
+            group_name if group_type == "category" else group_type + "_" + group_id,
+        )
         modified, created = xml_utils.parse_dates(category_el)
         for el in category_el.getElementsByTagName("Has_Member"):
             cwe_id = "CWE-" + el.getAttribute("CWE_ID")
@@ -180,22 +173,29 @@ class Cwe2Stix:
                 member = self.weakness_by_id[cwe_id]
                 object_refs.append(member.id)
             except KeyError as e:
-                logging.error(f"Missing weakness referenced in group {group_id}")
+                logging.error(f"Missing weakness referenced in {group_type} {group_id}")
         if not object_refs:
+            logging.info(f"Skipping empty {group_type} {group_id}")
             return
         group = Grouping(
             id=f"grouping--{str(generated_uuid)}",
             name=group_name,
             description=xml_utils.getTextFromNode(
                 xml_utils.firstOrNone(category_el.getElementsByTagName("Summary"))
+                or xml_utils.firstOrNone(category_el.getElementsByTagName("Objective"))
             ),
             created=created,
             modified=modified,
             context="unspecified",
             external_references=[
                 ExternalReference(
-                    source_name="cwe_category",
-                    external_id=group_id,
+                    source_name="cwe_" + group_type,
+                    external_id="CWE-" + group_id,
+                ),
+                ExternalReference(
+                    source_name="cwe",
+                    external_id="CWE-" + group_id,
+                    url=f"https://cwe.mitre.org/data/definitions/{group_id}.html",
                 ),
                 *[
                     self.external_reference_map.get(
@@ -209,6 +209,34 @@ class Cwe2Stix:
             object_refs=object_refs,
         )
         return group
+
+    def map_views(self):
+        views_el = xml_utils.firstOrNone(self.catalog.getElementsByTagName("Views"))
+        if not views_el:
+            return
+
+        for el in views_el.getElementsByTagName("View"):
+            if el.getAttribute("Status") == "Deprecated":
+                continue
+            view = self.parse_category_or_view(el)
+            if view:
+                self.add_object(view)
+
+    def map_categories(self):
+        categories_el = xml_utils.firstOrNone(
+            self.catalog.getElementsByTagName("Categories")
+        )
+        if not categories_el:
+            return
+        for el in categories_el.getElementsByTagName("Category"):
+            if el.getAttribute("Status") == "Deprecated":
+                continue
+            group = self.parse_category_or_view(el)
+            if group:
+                self.add_object(group)
+                self.weakness_by_id[group["external_references"][0]["external_id"]] = (
+                    group
+                )
 
     def parse_weakness(self, weakness_el: Element):
         weakness_id = weakness_el.getAttribute("ID")
