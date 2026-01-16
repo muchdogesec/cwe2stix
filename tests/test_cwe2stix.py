@@ -208,13 +208,13 @@ def test_map_categories_adds_groupings(cwe2stix_object):
     cwe.catalog = parseString(xml_content).documentElement
 
     # Mock parse_category_or_view to return a fake Grouping only for the non-deprecated
-    fake_group = {"id": "grouping--1000"}
+    fake_group = {"id": "grouping--1000", 'external_references': [{"external_id": "CWE-1000"}]}
 
     def fake_parse_category_or_view(el):
         if el.getAttribute("ID") == "1000":
             return fake_group
         return None
-
+    cwe.weakness_by_id = {"CWE-100": MagicMock(), "CWE-200": MagicMock()}
     cwe.parse_category_or_view = MagicMock(side_effect=fake_parse_category_or_view)
     cwe.add_object = MagicMock()
 
@@ -223,6 +223,9 @@ def test_map_categories_adds_groupings(cwe2stix_object):
 
     # Assert: add_object called only with our valid group
     cwe.add_object.assert_called_once_with(fake_group)
+    assert 'CWE-3000' not in cwe.weakness_by_id
+    assert 'CWE-2000' not in cwe.weakness_by_id
+    assert 'CWE-1000' in cwe.weakness_by_id
 
 
 def test_parse_category_or_view_builds_grouping(cwe2stix_object):
