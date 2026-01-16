@@ -174,7 +174,7 @@ To generate the id of the SRO, a UUIDv5 is generated using the namespace `d91de5
 
 e.g. `CanPrecede+CWE-1423+CWE-1102` = `7a612ea9-a08b-54bd-9e21-570509ba5d25` = `relationship--7a612ea9-a08b-54bd-9e21-570509ba5d25`
 
-### Grouping
+### Grouping (category)
 
 The CWE XML also contains category entries. e.g.
 
@@ -282,6 +282,100 @@ In some cases related weakness do not exist, as the CWE record does not exist in
 ```
 
 If a reference to a Vulnerability that does not exist (e.g. Weakness ID="227") is made, the entry is ignored in the Grouping `object_refs` dictionary.
+
+### Grouping (views)
+
+```xml
+      <View ID="1450" Name="Weaknesses in OWASP Top Ten RC1 (2025)" Type="Graph" Status="Incomplete">
+         <Objective>CWE entries in this view (graph) are associated with the first release candidate (RC1) of the OWASP Top Ten, as released in 2025.</Objective>
+         <Audience>
+            <Stakeholder>
+               <Type>Software Developers</Type>
+               <Description>This view outlines the most important issues as identified by the OWASP Top Ten (2025 RC1), providing a good starting point for web application developers who want to code more securely.</Description>
+            </Stakeholder>
+            <Stakeholder>
+               <Type>Product Customers</Type>
+               <Description>This view outlines the most important issues as identified by the OWASP Top Ten (2025 RC1), providing product customers with a way of asking their software development teams to follow minimum expectations for secure code.</Description>
+            </Stakeholder>
+            <Stakeholder>
+               <Type>Educators</Type>
+               <Description>Since the OWASP Top Ten covers the most frequently encountered issues, this view can be used by educators as training material for students.</Description>
+            </Stakeholder>
+         </Audience>
+     <Members>
+        <Has_Member CWE_ID="1436" View_ID="1450"/>
+        <Has_Member CWE_ID="1437" View_ID="1450"/>
+        <Has_Member CWE_ID="1438" View_ID="1450"/>
+        <Has_Member CWE_ID="1439" View_ID="1450"/>
+        <Has_Member CWE_ID="1440" View_ID="1450"/>
+        <Has_Member CWE_ID="1441" View_ID="1450"/>
+        <Has_Member CWE_ID="1442" View_ID="1450"/>
+        <Has_Member CWE_ID="1443" View_ID="1450"/>
+        <Has_Member CWE_ID="1444" View_ID="1450"/>
+        <Has_Member CWE_ID="1445" View_ID="1450"/>
+     </Members>
+         <References>
+            <Reference External_Reference_ID="REF-1500"/>
+         </References>
+         <Mapping_Notes>
+            <Usage>Prohibited</Usage>
+            <Rationale>This entry is a View. Views are not weaknesses and therefore inappropriate to describe the root causes of vulnerabilities.</Rationale>
+            <Comments>Use this View or other Views to search and navigate for the appropriate weakness.</Comments>
+            <Reasons>
+               <Reason Type="View"/>
+            </Reasons>
+         </Mapping_Notes>
+     <Notes>
+       <Note Type="Maintenance">As of CWE 4.19, the relationships in this view were pulled directly from the CWE mappings cited in the 2025 OWASP Top Ten RC1. These mappings include categories and high-level weaknesses. One mapping to a deprecated entry was removed. The CWE Program will work with OWASP to improve these mappings, possibly requiring modifications to CWE itself.</Note>
+     </Notes>
+         <Content_History>
+            <Submission>
+               <Submission_Name>CWE Content Team</Submission_Name>
+               <Submission_Organization>MITRE</Submission_Organization>
+               <Submission_Date>2024-12-01</Submission_Date>
+               <Submission_Version>4.19</Submission_Version>
+               <Submission_ReleaseDate>2025-12-11</Submission_ReleaseDate>
+            </Submission>
+         </Content_History>
+      </View>
+```
+
+Views group categories. We should model them as STIX Grouping objects..
+
+```json
+{
+    "type": "grouping",
+    "spec_version": "2.1",
+    "id": "grouping--<UUIDV5 LOGIC>",
+    "created_by_ref": "identity--9779a2db-f98c-5f4b-8d08-8ee04e02dbb5",
+    "created": "<Content_History.Submission_Date>",
+    "modified": "<Modification.Modificaton Date> (latest)",
+    "name": "<VIEW.NAME>",
+    "description": "<Objective>",
+    "context": "unspecified",
+    "external_references": [
+        {
+            "source_name": "cwe_category",
+            "external_id": "<VIEW ID>"
+        },
+        {
+            "source_name": "<External_Reference.author>, <External_Reference.author>",
+            "description": "<External_Reference.title>",
+            "url": "<External_Reference.URL>",
+            "external_id": "<Weaknesses.Weakness.External_Reference_ID>",
+        },
+    ],
+    "object_marking_refs": [
+        "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487",
+        "marking-definition--d91de5c9-2d85-5cc9-97c0-c5ec8deb1a4b"
+    ],
+    "object_refs": [
+        "<STIX IDs OF ALL GROUPINGS LISTED IN Members>"
+    ]
+}
+```
+
+To generate the id of the SDO, a UUIDv5 is generated using the namespace `d91de5c9-2d85-5cc9-97c0-c5ec8deb1a4b` and `name` field as the value
 
 ### Bundle
 
