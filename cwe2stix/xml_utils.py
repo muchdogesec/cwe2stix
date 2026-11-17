@@ -88,4 +88,9 @@ def parse_description(weakness_el: Element):
             .replace("Extended_Description>", "span>")
         )
         description = f"{description}\n-------------\n{extended_description}"
+    if nuance_el := firstOrNone(weakness_el.getElementsByTagName("Technical_Nuance")):
+        buf = io.StringIO()
+        nuance_el.writexml(buf)
+        nuance = buf.getvalue().replace("xhtml:", "").replace("Technical_Nuance>", "span>")
+        description = f"{description}\n-------------\n{nuance}"
     return description

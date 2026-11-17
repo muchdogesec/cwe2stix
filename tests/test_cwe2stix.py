@@ -541,3 +541,53 @@ def test_identity_ref(cwe2stix_object):
         cwe2stix_object.identity_obj["id"]
         == "identity--9779a2db-f98c-5f4b-8d08-8ee04e02dbb5"
     )
+
+
+def test_map_categories_reads_schema_8_groupings(cwe2stix_object):
+    # CWE 5.0 (schema 8.0) renamed <Categories>/<Category> to <Groupings>/<Grouping>
+    cwe = cwe2stix_object
+    xml_content = """
+    <Weakness_Catalog>
+        <Groupings>
+            <Grouping ID="1000" Name="Input Validation Errors">
+                <Has_Member CWE_ID="100"/>
+            </Grouping>
+            <Grouping ID="2000" Name="Deprecated Example" Status="Deprecated">
+                <Has_Member CWE_ID="200"/>
+            </Grouping>
+        </Groupings>
+    </Weakness_Catalog>
+    """
+    cwe.catalog = parseString(xml_content).documentElement
+    fake_group = {"id": "grouping--1000", "external_references": [{"external_id": "CWE-1000"}]}
+    cwe.weakness_by_id = {"CWE-100": MagicMock(), "CWE-200": MagicMock()}
+    cwe.parse_category_or_view = MagicMock(return_value=fake_group)
+    cwe.add_object = MagicMock()
+
+    cwe.map_categories()
+
+    cwe.parse_category_or_view.assert_called_once()
+    cwe.add_object.assert_called_once_with(fake_group)
+    assert "CWE-1000" in cwe.weakness_by_id
+
+
+def test_schema_8_grouping_keeps_category_stix_id(cwe2stix_object):
+    # A <Grouping> in CWE 5.0 must produce the same STIX id and source_name
+    # as the equivalent <Category> in CWE 4.x, so existing references don't break
+    cwe = cwe2stix_object
+    cwe.weakness_by_id = {
+        "CWE-489": MagicMock(id="weakness--b52c3e67-202f-4c89-93ba-1022812e1dcf"),
+    }
+    body = """ ID="1002" Name="SFP Secondary Cluster: Unexpected Entry Points" Status="Incomplete">
+        <Summary>Summary text.</Summary>
+        <Relationships><Has_Member CWE_ID="489" View_ID="888"/></Relationships>
+        <Content_History><Submission><Submission_Date>2014-07-29</Submission_Date></Submission></Content_History>
+    """
+    category_el = parseString(f"<Category{body}</Category>").documentElement
+    grouping_el = parseString(f"<Grouping{body}</Grouping>").documentElement
+
+    old = cwe.parse_category_or_view(category_el)
+    new = cwe.parse_category_or_view(grouping_el)
+
+    assert new.id == old.id
+    assert new.external_references[0].source_name == "cwe_category"

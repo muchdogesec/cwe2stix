@@ -176,7 +176,7 @@ e.g. `CanPrecede+CWE-1423+CWE-1102` = `7a612ea9-a08b-54bd-9e21-570509ba5d25` = `
 
 ### Grouping (category)
 
-The CWE XML also contains category entries. e.g.
+The CWE XML also contains category entries. From CWE 5.0 (schema 8.0) MITRE renamed these to groupings (`<Groupings>`/`<Grouping>`). cwe2stix treats both the same way, so a 5.0 grouping gets the same STIX `id` and `cwe_category` source name as the equivalent 4.x category. e.g.
 
 ```xml
 <Category ID="1020" Name="Verify Message Integrity" Status="Draft">

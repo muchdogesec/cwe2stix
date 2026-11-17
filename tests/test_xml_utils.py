@@ -151,3 +151,21 @@ def test_parse_description_only_simple():
     el = parseString(xml).documentElement
     desc = xml_utils.parse_description(el)
     assert desc == "Basic only"
+
+
+def test_parse_description_includes_technical_nuance():
+    # CWE 5.0 moved some Extended_Description text into Technical_Nuance
+    xml = """
+    <Weakness xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        <Description>Main description.</Description>
+        <Technical_Nuance>
+            <xhtml:p>Targeted technologies include speech recognition.</xhtml:p>
+        </Technical_Nuance>
+    </Weakness>
+    """
+    el = parseString(xml).documentElement
+    desc = xml_utils.parse_description(el)
+    assert desc.startswith("Main description.")
+    assert "Targeted technologies include speech recognition." in desc
+    assert "Technical_Nuance" not in desc
+    assert "<span>" in desc

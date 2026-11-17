@@ -159,6 +159,8 @@ class Cwe2Stix:
 
     def parse_category_or_view(self, category_el: Element):
         group_type = category_el.tagName.lower()
+        if group_type == "grouping":  # CWE 5.0 / schema 8.0 renamed Category -> Grouping
+            group_type = "category"  # keep IDs and source_name stable
         object_refs = []
         group_id = category_el.getAttribute("ID")
         group_name = category_el.getAttribute("Name")
@@ -225,10 +227,13 @@ class Cwe2Stix:
     def map_categories(self):
         categories_el = xml_utils.firstOrNone(
             self.catalog.getElementsByTagName("Categories")
+            or self.catalog.getElementsByTagName("Groupings")
         )
         if not categories_el:
             return
-        for el in categories_el.getElementsByTagName("Category"):
+        for el in categories_el.childNodes:
+            if el.nodeType != el.ELEMENT_NODE or el.tagName not in ("Category", "Grouping"):
+                continue
             if el.getAttribute("Status") == "Deprecated":
                 continue
             group = self.parse_category_or_view(el)
